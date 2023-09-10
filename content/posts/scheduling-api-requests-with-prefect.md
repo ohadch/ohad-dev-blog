@@ -144,7 +144,7 @@ from prefect import flow, task
 Then, let's create a `get_random_activity` task. This task will make a GET request to the Bored API, and return the response:
 
 ```python
-from typing import Dict, Any
+from typing import Any
 
 @task
 def get_random_activity() -> str:
