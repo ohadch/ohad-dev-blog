@@ -30,7 +30,7 @@ For example, let's say we have a workflow that consists of three tasks: `task1`,
 Possible DAG for this workflow could be:
 
 ```
-task1 -> task2 -> task3
+task1 <- task2 <- task3
 ```
 
 In this DAG, `task3` depends on `task2`, and `task2` depends on `task1`.
