@@ -112,7 +112,6 @@ get_random_activity <- save_artifact
 
 Let's see how we can implement this workflow with Prefect.
 
-
 ## Starting a Prefect project
 
 First, let's create a new directory for our project:
@@ -149,8 +148,7 @@ Then, install the requirements:
 pip install -r requirements.txt
 ```
 
-
-## Creating a Prefect flow
+## Prefect Tasks and Flows
 
 The way to create a DAG in Prefect is to create a Prefect flow.
 
@@ -158,10 +156,20 @@ A Prefect flow is a Python function that is decorated with `@flow` decorator. It
 The tasks in the flow are represented by Python functions that are decorated with `@task` decorator.
 Finally, the dependencies between the tasks are represented by the function calls in the flow function.
 
+## The power of Prefect
+
+It is important to note that literally any Python function can be a Prefect task. In my opinion, that is the main power of Prefect, compared to its alternatives: it allows you to create a DAG by simply writing a Python function. 
+Moreover, it allows you to simply wrap your existing Python functions with `@task` decorator, and use them in your flow.
+Not only that I find this approach very intuitive, I also find it very powerful.
+It allowed me to easily integrate Prefect into my existing Python projects without having to change my code at all.
+
+Let's see how we can create a Prefect flow for our use case.
+
+## Creating a Prefect flow
 
 Although we can create a Prefect project with the `prefect` CLI, for this example we will simply create the flow manually.
 
-I like to create a `flows` directory for my flows:
+I like to create a `flows` directory for my flows and keep them there. So let's create a `flows` directory:
 
 ```bash
 mkdir flows
@@ -361,14 +369,9 @@ By default, we see the flow runs that are in `Crashed` state, as they are probab
 
 The tab in the middle that shows '1' is the `Completed` tab. It shows the flow runs that ended in `Completed` state.
 
-
 Now, let's see how we can schedule this flow to run every day at 9:00 AM.
 
 ## Understanding Prefect Deployments
 
 In the previous section, we have created a Prefect flow and ran it as a local process.
-However, in real life, we would like to run our flows in a production environment, which is usually remote.
-For example, we might want to run our flows in a Kubernetes cluster such as EKS, or in a serverless environment such as AWS ECS.
-In order to run our flows in a production environment, we need to deploy them.
-
-Prefect encapsulates the deployment logic in a Prefect entity called a Prefect Deployment.
+However, it does not 
