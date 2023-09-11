@@ -370,3 +370,4 @@ By default, we see the flow runs that are in `Crashed` state, as they are probab
 The tab in the middle that shows '1' is the `Completed` tab. It shows the flow runs that ended in `Completed` state.
 
 In the [next post](/posts/scheduling-api-requests-with-prefect-part-2/), we will learn how to schedule our flow to run every day at 9:00 AM.
+Stay tuned!
