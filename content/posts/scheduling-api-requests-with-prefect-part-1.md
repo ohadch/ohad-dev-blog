@@ -1,7 +1,7 @@
 +++
-title = 'Scheduling Api Requests With Prefect'
+title = 'Scheduling API Requests With Prefect - Part 1'
 date = 2023-09-10T08:09:53+03:00
-draft = true
+draft = false
 +++
 
 ## Introduction
@@ -359,7 +359,7 @@ Check out the dashboard at http://127.0.0.1:4200
 Now, let's open the Prefect UI in our browser by navigating to `http://localhost:4200`.
 
 You should see a screen similar to this:
-![Prefect UI](/posts/scheduling-api-requests-with-prefect/prefect-dashboard.png)
+![Prefect UI](/posts/scheduling-api-requests-with-prefect-part-1/prefect-dashboard.png)
 
 
 This is the Prefect UI. Currently, we see the dashboard page, 
@@ -369,9 +369,4 @@ By default, we see the flow runs that are in `Crashed` state, as they are probab
 
 The tab in the middle that shows '1' is the `Completed` tab. It shows the flow runs that ended in `Completed` state.
 
-Now, let's see how we can schedule this flow to run every day at 9:00 AM.
-
-## Understanding Prefect Deployments
-
-In the previous section, we have created a Prefect flow and ran it as a local process.
-However, it does not 
+In the [next post](/posts/scheduling-api-requests-with-prefect-part-2/), we will learn how to schedule our flow to run every day at 9:00 AM.
