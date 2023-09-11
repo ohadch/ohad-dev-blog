@@ -18,27 +18,53 @@ In this post, I will assume that you have a basic understanding of Python.
 You do not need to have any prior knowledge of Prefect. 
 I will also assume that you have a basic understanding of APIs. 
 
-## Understanding DAGs
+In this post, I attempt to demonstrate an end-to-end solution that is simple enough for those who are new to prefect and DAGs.
+Hence, I will only cover the basics of each topic.
+If you want to learn more about Prefect, I recommend you to check out the [Prefect documentation](https://docs.prefect.io/).
+
+## Understanding DAGs (Directed Acyclic Graphs)
+
+### What is a DAG?
 
 In order to understand Prefect, we need to understand DAGs. DAG stands for Directed Acyclic Graph. 
 In the context of workflows, a DAG is a graph that represents the dependencies between tasks. 
 Each node in the graph represents a task, and each edge represents a dependency between tasks.
 
-For example, let's say we have a workflow that consists of three tasks: `task1`, `task2`, and `task3`.
-`task1` depends on `task2`, and `task2` depends on `task3`.
-
-Possible DAG for this workflow could be:
-
-```
-task1 <- task2 <- task3
-```
-
-In this DAG, `task3` depends on `task2`, and `task2` depends on `task1`.
-
 This is how the the three components of DAG stand for:
 - Directed: The edges in the graph have a direction. In our example, the direction is from `task1` to `task2`, and from `task2` to `task3`.
 - Acyclic: There are no cycles in the graph. Aka, there are no loops in the graph. In our example, if `task1` depends on `task3`, then we have a cycle in the graph.
 - Graph: The graph is a collection of nodes and edges. In our example, the nodes are `task1`, `task2`, and `task3`. The edges are the dependencies between the tasks.
+
+### An example DAG
+
+Imagine you're getting ready for a cozy dinner at home with your family.
+
+You have three main tasks: You need to buy groceries, prepare food, and prepare the table. Only then, you can eat.
+
+So a simple DAG for this workflow could be:
+
+```
+buy_groceries <- prepare_food <- prepare_table
+```
+
+That is a simple DAG. But it can be improved: while the food is being prepared, 
+you can ask your significant other to prepare the table, so you can save some time by running these tasks in parallel.
+
+So a better DAG for this workflow could be:
+
+```
+buy_groceries <- prepare_food
+buy_groceries <- prepare_table
+```
+
+In this DAG, `prepare_food` and `prepare_table` tasks depend on `buy_groceries` task.
+
+This is a simple example, but it represents the general idea of DAGs.
+
+### Why are DAGs important?
+
+DAGs are important in workflow management because they provide a structured way to represent task dependencies, 
+enabling efficient parallel execution, visualization, and error handling in complex workflows.
 
 This was just a short introduction to DAGs. If you want to learn more about DAGs, stay tuned for my future posts.
 
@@ -297,9 +323,52 @@ The activity is: Clean out your garage
 
 As you can see, the flow ran successfully, and we got a random activity printed to the console.
 
+Now it is a good time to get familiar with the Prefect UI. 
+
+In order to do that, let's start the Prefect server:
+
+```bash
+prefect server start
+```
+
+If everything went well, you should see an output similar to the following in the CLI:
+
+```
+ ___ ___ ___ ___ ___ ___ _____ 
+| _ \ _ \ __| __| __/ __|_   _| 
+|  _/   / _|| _|| _| (__  | |  
+|_| |_|_\___|_| |___\___| |_|  
+
+Configure Prefect to communicate with the server with:
+
+    prefect config set PREFECT_API_URL=http://127.0.0.1:4200/api
+
+View the API reference documentation at http://127.0.0.1:4200/docs
+
+Check out the dashboard at http://127.0.0.1:4200
+```
+
+Now, let's open the Prefect UI in our browser by navigating to `http://localhost:4200`.
+
+You should see a screen similar to this:
+![Prefect UI](/posts/scheduling-api-requests-with-prefect/prefect-dashboard.png)
+
+
+This is the Prefect UI. Currently, we see the dashboard page, 
+
+Inside the `Flow Runs` box, we see flow runs broken down by state. 
+By default, we see the flow runs that are in `Crashed` state, as they are probably the ones that require our attention.
+
+The tab in the middle that shows '1' is the `Completed` tab. It shows the flow runs that ended in `Completed` state.
+
+
 Now, let's see how we can schedule this flow to run every day at 9:00 AM.
 
+## Understanding Prefect Deployments
 
+In the previous section, we have created a Prefect flow and ran it as a local process.
+However, in real life, we would like to run our flows in a production environment, which is usually remote.
+For example, we might want to run our flows in a Kubernetes cluster such as EKS, or in a serverless environment such as AWS ECS.
+In order to run our flows in a production environment, we need to deploy them.
 
-
-
+Prefect encapsulates the deployment logic in a Prefect entity called a Prefect Deployment.
