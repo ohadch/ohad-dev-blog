@@ -67,13 +67,21 @@ When we make a GET request to this endpoint, we get a JSON response that looks l
 
 The response contains the activity, the type of the activity, the number of participants, the price, the link, the key, and the accessibility.
 
-Now, let's say we want to get a random activity every day at 9:00 AM, and we want to print it to the console. 
-I know, it is not the most exciting use case, but it is a good example for our purposes. 
+Now, let's say we want to get a random activity every day at 9:00 AM, print it to the console, and save it as a Prefect artifact. 
 
 A sample DAG for this workflow could be as simple as:
 
 ```
-get_random_activity -> send_email
+get_random_activity <- print_activity <- save_artifact
+```
+
+In this DAG, `print_activity` depends on `get_random_activity`, and `save_artifact` depends on `get_random_activity`.
+
+We can even run `print_activity` and `save_artifact` in parallel, as they both depend on `get_random_activity`:
+    
+```
+get_random_activity <- print_activity
+get_random_activity <- save_artifact
 ```
 
 Let's see how we can implement this workflow with Prefect.
@@ -163,7 +171,25 @@ def print_activity(activity: str) -> None:
     Print the activity to the console
     :param activity: The activity to print
     """
-    print(f"Today's activity is: {activity}")
+    print(f"The activity is: {activity}")
+```
+
+And lastly, let's create a `save_artifact` task. This task will save the activity to a Prefect artifact, 
+that we can view in the Prefect UI:
+
+```python
+@task
+def save_activity_artifact(activity: str) -> None:
+    """
+    Print the activity to the console
+    :param activity: The activity to print
+    """
+    create_markdown_artifact(
+        markdown=f"""
+        Today, you should do the following activity: **{activity}**. 
+        """,
+        key="activity"
+    )
 ```
 
 Finally, let's create a `suggest_activity` flow. This flow will call the `get_random_activity` task, and then call the `print_activity` task:
@@ -174,14 +200,26 @@ def suggest_activity() -> None:
     """
     Suggest a random activity
     """
+    # First, we need to get a random activity
     activity = get_random_activity.submit()
+    
+    # Then, we can both print it to the console, and save it as an artifact, but we can do it in parallel
     print_activity.submit(activity)
+    save_activity_artifact.submit(activity)
 ```
+
+In the `suggest_activity` flow, we first call the `get_random_activity` task, 
+and then we call the `print_activity` task and the `save_activity_artifact` task in parallel.
+
+This is possible because Prefect is smart enough to figure out the dependencies between the tasks.
+As both `print_activity` and `save_activity_artifact` tasks depend directly on the result of the `get_random_activity` 
+task (that is, the `activity` variable), Prefect will run them in parallel.
 
 That's it! We have created our flow. This is how the `flows/suggest_activity.py` file should look like:
 
 ```python
 from prefect import flow, task
+from prefect.artifacts import create_markdown_artifact
 
 
 @task
@@ -200,7 +238,21 @@ def print_activity(activity: str) -> None:
     Print the activity to the console
     :param activity: The activity to print
     """
-    print(f"Today's activity is: {activity}")
+    print(f"The activity is: {activity}")
+
+
+@task
+def save_activity_artifact(activity: str) -> None:
+    """
+    Print the activity to the console
+    :param activity: The activity to print
+    """
+    create_markdown_artifact(
+        markdown=f"""
+        Today, you should do the following activity: **{activity}**. 
+        """,
+        key="activity"
+    )
 
 
 @flow
@@ -210,6 +262,7 @@ def suggest_activity() -> None:
     """
     activity = get_random_activity.submit()
     print_activity.submit(activity)
+    save_activity_artifact.submit(activity)
 
 
 if __name__ == "__main__":
@@ -228,15 +281,18 @@ python flows/suggest_activity.py
 If everything went well, you should see an output similar to this:
 
 ```
-22:49:42.857 | INFO    | prefect.engine - Created flow run 'upbeat-pogona' for flow 'suggest-activity'
-22:49:43.148 | INFO    | Flow run 'upbeat-pogona' - Created task run 'get_random_activity-0' for task 'get_random_activity'
-22:49:43.149 | INFO    | Flow run 'upbeat-pogona' - Submitted task run 'get_random_activity-0' for execution.
-22:49:43.173 | INFO    | Flow run 'upbeat-pogona' - Created task run 'print_activity-0' for task 'print_activity'
-22:49:43.174 | INFO    | Flow run 'upbeat-pogona' - Submitted task run 'print_activity-0' for execution.
-22:49:44.282 | INFO    | Task run 'get_random_activity-0' - Finished in state Completed()
-Today's activity is: Make a simple musical instrument
-22:49:44.358 | INFO    | Task run 'print_activity-0' - Finished in state Completed()
-22:49:44.386 | INFO    | Flow run 'upbeat-pogona' - Finished in state Completed('All states completed.')
+21:33:40.150 | INFO    | prefect.engine - Created flow run 'liberal-trout' for flow 'suggest-activity'
+21:33:40.419 | INFO    | Flow run 'liberal-trout' - Created task run 'get_random_activity-0' for task 'get_random_activity'
+21:33:40.420 | INFO    | Flow run 'liberal-trout' - Submitted task run 'get_random_activity-0' for execution.
+21:33:40.452 | INFO    | Flow run 'liberal-trout' - Created task run 'print_activity-0' for task 'print_activity'
+21:33:40.453 | INFO    | Flow run 'liberal-trout' - Submitted task run 'print_activity-0' for execution.
+21:33:40.463 | INFO    | Flow run 'liberal-trout' - Created task run 'save_activity_artifact-0' for task 'save_activity_artifact'
+21:33:40.464 | INFO    | Flow run 'liberal-trout' - Submitted task run 'save_activity_artifact-0' for execution.
+21:33:41.352 | INFO    | Task run 'get_random_activity-0' - Finished in state Completed()
+The activity is: Clean out your garage
+21:33:41.417 | INFO    | Task run 'print_activity-0' - Finished in state Completed()
+21:33:41.604 | INFO    | Task run 'save_activity_artifact-0' - Finished in state Completed()
+21:33:41.637 | INFO    | Flow run 'liberal-trout' - Finished in state Completed('All states completed.')
 ```
 
 As you can see, the flow ran successfully, and we got a random activity printed to the console.
