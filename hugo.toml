@@ -1,4 +1,5 @@
-baseURL = 'https://example.org/'
+baseURL = 'https://ohadch.github.io/ohad-dev-blog/'
 languageCode = 'en-us'
 title = "Ohad's Dev Blog"
 theme = 'PaperMod'
+canonifyURLs = true
