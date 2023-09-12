@@ -312,9 +312,9 @@ def suggest_activity() -> None:
     """
     Suggest a random activity
     """
-    activity = get_random_activity.submit()
-    print_activity.submit(activity)
-    save_activity_artifact.submit(activity)
+    activity = get_random_activity()
+    print_activity(activity)
+    save_activity_artifact(activity)
 
 
 if __name__ == "__main__":
