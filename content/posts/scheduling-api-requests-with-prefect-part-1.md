@@ -15,6 +15,8 @@ Prefect is an ecosystem for building, running, and monitoring data workflows. It
 This is the first post in a series of posts about Prefect. At the end of this series, you will be able to create, run, and monitor Prefect flows.
 In this post, we will learn about Prefect, and we will create a simple Prefect flow that makes a GET request to the Bored API, prints the response to the console, and saves it as a Prefect artifact.
 
+You may view the source code for this post [here](https://github.com/ohadch/ohad-dev-blog-examples/tree/master/prefect-schedule-api-requests).
+
 ## Assumptions
 
 In this post, I will assume that you have a basic understanding of Python. 
