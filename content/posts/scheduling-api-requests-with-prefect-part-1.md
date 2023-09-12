@@ -4,13 +4,18 @@ date = 2023-09-10T08:09:53+03:00
 draft = false
 +++
 
+_Note: This post is part of a series of posts about Prefect._
+
 ## Introduction
 
 One of the most common tasks in data engineering is to make API requests. 
 This is a task that can be automated with Prefect. 
-Prefect is a Python library that allows you to build, schedule and monitor workflows. 
-It is a great tool for automating data science tasks. 
-In this post, I will show you how to use Prefect to schedule API requests.
+Prefect is an ecosystem for building, running, and monitoring data workflows. Its core is open source, and it is written in Python.
+
+This is the first post in a series of posts about Prefect. At the end of this series, you will be able to create, run, and monitor Prefect flows.
+In this post, we will learn about Prefect, and we will create a simple Prefect flow that makes a GET request to the Bored API, prints the response to the console, and saves it as a Prefect artifact.
+
+You may view the source code for this post [here](https://github.com/ohadch/ohad-dev-blog-examples/tree/master/prefect-schedule-api-requests).
 
 ## Assumptions
 
@@ -29,11 +34,6 @@ If you want to learn more about Prefect, I recommend you to check out the [Prefe
 In order to understand Prefect, we need to understand DAGs. DAG stands for Directed Acyclic Graph. 
 In the context of workflows, a DAG is a graph that represents the dependencies between tasks. 
 Each node in the graph represents a task, and each edge represents a dependency between tasks.
-
-This is how the the three components of DAG stand for:
-- Directed: The edges in the graph have a direction. In our example, the direction is from `task1` to `task2`, and from `task2` to `task3`.
-- Acyclic: There are no cycles in the graph. Aka, there are no loops in the graph. In our example, if `task1` depends on `task3`, then we have a cycle in the graph.
-- Graph: The graph is a collection of nodes and edges. In our example, the nodes are `task1`, `task2`, and `task3`. The edges are the dependencies between the tasks.
 
 ### An example DAG
 
@@ -60,6 +60,26 @@ buy_groceries <- prepare_table
 In this DAG, `prepare_food` and `prepare_table` tasks depend on `buy_groceries` task.
 
 This is a simple example, but it represents the general idea of DAGs.
+
+This is how the three components of DAG stand for:
+
+#### Directed
+
+The edges in the graph have a direction. 
+In our example, the direction is from `buy_groceries` to `prepare_food` and `prepare_table`.
+
+#### Acyclic
+
+There are no cycles in the graph. 
+A cycle is a path that starts and ends at the same node, causing a mutual dependency between the nodes, 
+leading to an infinite loop. 
+In our example, there are no cycles in the graph. But if we add a dependency from `prepare_food` to `buy_groceries`,
+we will have a cycle in the graph, as `buy_groceries` will depend on `prepare_food`, and `prepare_food` will depend on `buy_groceries`.
+
+#### Graph 
+A graph is a collection of nodes and edges. In our example, the nodes are `buy_groceries`, `prepare_food`, and `prepare_table`,
+and the edges are the dependencies between the tasks.
+
 
 ### Why are DAGs important?
 
@@ -235,11 +255,11 @@ def suggest_activity() -> None:
     Suggest a random activity
     """
     # First, we need to get a random activity
-    activity = get_random_activity.submit()
+    activity = get_random_activity()
     
     # Then, we can both print it to the console, and save it as an artifact, but we can do it in parallel
-    print_activity.submit(activity)
-    save_activity_artifact.submit(activity)
+    print_activity(activity)
+    save_activity_artifact(activity)
 ```
 
 In the `suggest_activity` flow, we first call the `get_random_activity` task, 
@@ -294,9 +314,9 @@ def suggest_activity() -> None:
     """
     Suggest a random activity
     """
-    activity = get_random_activity.submit()
-    print_activity.submit(activity)
-    save_activity_artifact.submit(activity)
+    activity = get_random_activity()
+    print_activity(activity)
+    save_activity_artifact(activity)
 
 
 if __name__ == "__main__":
@@ -331,43 +351,32 @@ The activity is: Clean out your garage
 
 As you can see, the flow ran successfully, and we got a random activity printed to the console.
 
-Now it is a good time to get familiar with the Prefect UI. 
+We may also visualize the flow. In order to do so, simply edit the `if __name__ == "__main__"` block at the end of the file to look like this:
 
-In order to do that, let's start the Prefect server:
+```python
+if __name__ == "__main__":
+    suggest_activity.visualize()
+```
+
+Then, run the flow again:
 
 ```bash
-prefect server start
+python flows/suggest_activity.py
 ```
 
-If everything went well, you should see an output similar to the following in the CLI:
+A preview of the flow should pop up:
 
-```
- ___ ___ ___ ___ ___ ___ _____ 
-| _ \ _ \ __| __| __/ __|_   _| 
-|  _/   / _|| _|| _| (__  | |  
-|_| |_|_\___|_| |___\___| |_|  
+![Flow preview](/posts/scheduling-api-requests-with-prefect-part-1/flow-visualization.png)
 
-Configure Prefect to communicate with the server with:
+As you can see, the flow is represented as a DAG. The nodes in the graph represent the tasks, and the edges represent the dependencies between the tasks.
+Just like in our example, the `print_activity` and `save_activity_artifact` tasks are represented as nodes, and they both depend on the `get_random_activity` task.
 
-    prefect config set PREFECT_API_URL=http://127.0.0.1:4200/api
+## Conclusion for this post
 
-View the API reference documentation at http://127.0.0.1:4200/docs
-
-Check out the dashboard at http://127.0.0.1:4200
-```
-
-Now, let's open the Prefect UI in our browser by navigating to `http://localhost:4200`.
-
-You should see a screen similar to this:
-![Prefect UI](/posts/scheduling-api-requests-with-prefect-part-1/prefect-dashboard.png)
-
-
-This is the Prefect UI. Currently, we see the dashboard page, 
-
-Inside the `Flow Runs` box, we see flow runs broken down by state. 
-By default, we see the flow runs that are in `Crashed` state, as they are probably the ones that require our attention.
-
-The tab in the middle that shows '1' is the `Completed` tab. It shows the flow runs that ended in `Completed` state.
+In this post, we:
+- Learned about Prefect
+- Got familiar with DAGs
+- Implemented a simple Prefect flow that makes a GET request to the Bored API, prints the response to the console, and saves it as a Prefect artifact.
+- Learned how to visualize a Prefect flow
 
 In the [next post](/posts/scheduling-api-requests-with-prefect-part-2/), we will learn how to schedule our flow to run every day at 9:00 AM.
-Stay tuned!

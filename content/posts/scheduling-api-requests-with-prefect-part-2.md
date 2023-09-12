@@ -11,6 +11,44 @@ and we have created a simple Prefect flow that makes a GET request to the Bored 
 
 In this post, we will learn how to schedule our flow to run every day at 9:00 AM.
 
+Now it is a good time to get familiar with the Prefect UI. 
+
+In order to do that, let's start the Prefect server:
+
+```bash
+prefect server start
+```
+
+If everything went well, you should see an output similar to the following in the CLI:
+
+```
+ ___ ___ ___ ___ ___ ___ _____ 
+| _ \ _ \ __| __| __/ __|_   _| 
+|  _/   / _|| _|| _| (__  | |  
+|_| |_|_\___|_| |___\___| |_|  
+
+Configure Prefect to communicate with the server with:
+
+    prefect config set PREFECT_API_URL=http://127.0.0.1:4200/api
+
+View the API reference documentation at http://127.0.0.1:4200/docs
+
+Check out the dashboard at http://127.0.0.1:4200
+```
+
+Now, let's open the Prefect UI in our browser by navigating to `http://localhost:4200`.
+
+You should see a screen similar to this:
+![Prefect UI](/posts/scheduling-api-requests-with-prefect-part-2/prefect-dashboard.png)
+
+
+This is the Prefect UI. Currently, we see the dashboard page, 
+
+Inside the `Flow Runs` box, we see flow runs broken down by state. 
+By default, we see the flow runs that are in `Crashed` state, as they are probably the ones that require our attention.
+
+The tab in the middle that shows '1' is the `Completed` tab. It shows the flow runs that ended in `Completed` state.
+
 ## Understanding Prefect Architecture
 
 In the previous post, we have created a Prefect flow and ran it as a local process.
