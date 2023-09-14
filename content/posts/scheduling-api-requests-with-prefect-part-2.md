@@ -4,6 +4,8 @@ date = 2023-09-10T08:09:53+03:00
 draft = true
 +++
 
+_Note: This post is part of a series of posts about Prefect. If you haven't read the [previous post](/posts/scheduling-api-requests-with-prefect-part-1/), I recommend reading it first._
+
 ## Introduction
 
 In the [previous post](/posts/scheduling-api-requests-with-prefect-part-1/), we have learned about Prefect,
@@ -16,11 +18,13 @@ By the end of this post, we will have a Prefect flow that makes a GET request to
 
 ## Assumptions
 
-As in the previous post, we will assume that we have a Python 3.10+ environment with Prefect installed.
+As in the previous post, we will assume that we have a Python 3.10+ environment with Prefect installed. This time, we will also assume that we have the code from the [previous post](/posts/scheduling-api-requests-with-prefect-part-1/) in our project.
+You may also view the source code for this post [here](https://github.com/ohadch/ohad-dev-blog-examples/tree/master/prefect-schedule-api-requests).
+
 Once again, we will only cover the basics of each topic. 
 For more details, please refer to the [Prefect documentation](https://docs.prefect.io/).
 
-## A brief view of the Prefect architecture
+## Prefect Architecture
 
 Before we dive into the details, we need to have a basic understanding of the Prefect architecture.
 
@@ -34,7 +38,7 @@ As we can see in the image above, Prefect consists of following components:
 
 _Of course, this is a simplified view of the Prefect architecture. For more details, please refer to the [Prefect documentation](https://docs.prefect.io/)._
 
-## An overview of the Process
+## The Deployment Pattern
 
 In a nutshell, we need to deploy our flow as a Prefect deployment, 
 and then schedule the deployment to be pulled by a Prefect worker every day at 9:00 AM.
@@ -47,7 +51,7 @@ It all comes together like this:
 4. The Prefect worker pulls the deployment from the work pool, and executes it on the execution environment where it lives.
 5. Upon completion (or failure) of the flow run, the Prefect worker informs the Prefect API about the result.
 
-## Deploying our flow
+## Deploying our Flow
 
 Prefect allows us to deploy our flow using a YAML file, or using the Python API. In this post, we will deploy our flow using the Python API.
 
