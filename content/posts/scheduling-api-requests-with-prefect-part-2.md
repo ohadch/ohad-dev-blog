@@ -153,7 +153,7 @@ Worker 'ProcessWorker 295d558e-5ade-47e7-8bf9-21f4989fdd8d' started!
 21:45:34.717 | INFO    | prefect.worker.process.processworker 295d558e-5ade-47e7-8bf9-21f4989fdd8d - Work pool 'activities' created.
 ```
 
-Our deployment is now ready to be tested. It's a good time to get familiar with the Prefect UI.
+Keep this window open as well. Now, Our deployment is ready to be tested. It's a good time to get familiar with the Prefect UI.
 
 ## The Prefect UI
 
