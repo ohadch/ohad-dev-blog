@@ -47,6 +47,10 @@ So a simple DAG for this workflow could be:
 buy_groceries <- prepare_food <- prepare_table
 ```
 
+_Notice that the arrow does not indicate the direction of the execution over time. 
+Instead, it indicates the dependency between the tasks. 
+For example, `prepare_food` depends on `buy_groceries`, and `prepare_table` depends on `prepare_food`._
+
 That is a simple DAG. But it can be improved: while the food is being prepared, 
 you can ask your significant other to prepare the table, so you can save some time by running these tasks in parallel.
 
