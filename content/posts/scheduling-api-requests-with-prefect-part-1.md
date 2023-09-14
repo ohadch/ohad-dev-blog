@@ -19,12 +19,12 @@ You may view the source code for this post [here](https://github.com/ohadch/ohad
 
 ## Assumptions
 
-In this post, I will assume that you have a basic understanding of Python. 
+In this post, we will assume that you have a basic understanding of Python. 
 You do not need to have any prior knowledge of Prefect. 
 I will also assume that you have a basic understanding of APIs. 
 
-In this post, I attempt to demonstrate an end-to-end solution that is simple enough for those who are new to prefect and DAGs.
-Hence, I will only cover the basics of each topic.
+In this post, we attempt to demonstrate an end-to-end solution that is simple enough for those who are new to prefect and DAGs.
+Hence, we will only cover the basics of each topic.
 If you want to learn more about Prefect, I recommend you to check out the [Prefect documentation](https://docs.prefect.io/).
 
 ## Understanding DAGs (Directed Acyclic Graphs)
