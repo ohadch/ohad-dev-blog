@@ -1,7 +1,7 @@
 +++
 title = 'Scheduling API Requests With Prefect - Part 2'
-date = 2023-09-10T08:09:53+03:00
-draft = true
+date = 2023-09-14T08:09:53+03:00
+draft = false
 +++
 
 _Note: This post is part of a series of posts about Prefect. If you haven't read the [previous post](/posts/scheduling-api-requests-with-prefect-part-1/), I recommend reading it first._
