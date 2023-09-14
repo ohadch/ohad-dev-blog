@@ -43,16 +43,21 @@ You have three main tasks: You need to buy groceries, prepare food, and prepare 
 
 So a simple DAG for this workflow could be:
 
-```
+
+```text
 buy_groceries <- prepare_food <- prepare_table
 ```
+
+_Notice that the arrow does not indicate the direction of the execution over time. 
+Instead, it indicates the dependency between the tasks. 
+For example, `prepare_food` depends on `buy_groceries`, and `prepare_table` depends on `prepare_food`._
 
 That is a simple DAG. But it can be improved: while the food is being prepared, 
 you can ask your significant other to prepare the table, so you can save some time by running these tasks in parallel.
 
 So a better DAG for this workflow could be:
 
-```
+```text
 buy_groceries <- prepare_food
 buy_groceries <- prepare_table
 ```
@@ -117,7 +122,7 @@ Now, let's say we want to get a random activity every day at 9:00 AM, print it t
 
 A sample DAG for this workflow could be as simple as:
 
-```
+```text
 get_random_activity <- print_activity <- save_artifact
 ```
 
@@ -125,7 +130,7 @@ In this DAG, `print_activity` depends on `get_random_activity`, and `save_artifa
 
 We can even run `print_activity` and `save_artifact` in parallel, as they both depend on `get_random_activity`:
     
-```
+```text
 get_random_activity <- print_activity
 get_random_activity <- save_artifact
 ```
