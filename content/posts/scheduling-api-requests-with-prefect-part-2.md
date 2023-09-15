@@ -14,7 +14,7 @@ Nevertheless, we ran our flow directly from the CLI as a Python script.
 Although it works, it is not a good solution for scheduling our flow in production. 
 
 In this post, we will learn how to schedule our flow to run every day at 9:00 AM.
-By the end of this post, we will have a Prefect flow that makes a GET request to the Bored API every day at 9:00 AM, and saves the response as a Prefect artifact.
+By the end of this post, we will have a Prefect deployment that makes a GET request to the Bored API every day at 9:00 AM, and saves the response as a Prefect artifact.
 
 ## Assumptions
 
@@ -66,7 +66,6 @@ from flows.suggest_activity import suggest_activity
 
 
 async def main():
-    # This line creates a deployment for the flow, which will be scheduled to run every day at 9:00 AM
     deployment = await Deployment.build_from_flow(
         name="Daily",
         flow=suggest_activity,
