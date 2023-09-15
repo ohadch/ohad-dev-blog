@@ -230,14 +230,10 @@ That's it! We have successfully scheduled our flow to run every day at 9:00 AM. 
 
 ## Conclusion
 
-That wraps up this post and the series. 
+In summary, we've come to the end of this post and our entire series. In these articles, we've covered how to set up workflows to run daily at 9:00 AM and how to use the Prefect UI to keep an eye on these workflows and their results.
 
-We have learned how to schedule our flow to run every day at 9:00 AM, and we have learned how to use the Prefect UI to monitor our flow runs and artifacts.
+If you followed along, you now know how to create, deploy, and schedule Prefect flows for automated runs. I hope you found this series useful and enjoyable. Please share your thoughts and feedback with me on [Twitter](https://twitter.com/ohadchaet).
 
-I hope you have enjoyed this series, and that you have learned something new. I would love to hear your thoughts and feedback, so feel free to reach out to me on [Twitter](https://twitter.com/ohadchaet).
-
-Thanks for reading, and see you next time!
-
-
+Thank you for reading, and stay tuned for more content in the future!
 
 
